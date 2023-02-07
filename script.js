@@ -33,7 +33,6 @@ function renderCountry(data, className = '') {
 }
 
 function renderError(err) {
-    countriesContainer.innerHTML = '';
     countriesContainer.insertAdjacentHTML('beforeend', err);
 }
 
