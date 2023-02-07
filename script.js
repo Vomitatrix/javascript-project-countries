@@ -6,8 +6,6 @@ const searchBtn = document.querySelector('.search-btn');
 const whereAmIBtn = document.querySelector('.where-am-i-btn');
 
 function renderCountry(data, className = '') {
-    countriesContainer.innerHTML = '';
-
     const population =
         +data.population > 1_000_000_000
             ? (+data.population / 1_000_000_000).toFixed(2) + ' billion'
@@ -78,6 +76,7 @@ function getLocation() {
 
 async function getCountry(country) {
     try {
+        countriesContainer.innerHTML = '';
         const res = await getJSON(country, 'search');
 
         res.forEach(country => {
