@@ -16,6 +16,7 @@ main {
     opacity: 0;
     transition: all 1s;
     align-items: center;
+    justify-content: center;
 }
 
 .country {

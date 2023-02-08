@@ -139,7 +139,11 @@ searchBtn.addEventListener('click', e => {
 
 countriesContainer.addEventListener('click', e => {
     const countries = document.querySelectorAll('.country');
-    const currCCA3 = e.target.closest('.country').dataset.cca3;
+    const currCountry = e.target.closest('.country');
+
+    if (!currCountry) return;
+
+    const currCCA3 = currCountry.dataset.cca3;
 
     countries.forEach(curr => {
         if (curr.dataset.cca3 !== currCCA3) curr.remove();
@@ -149,9 +153,13 @@ countriesContainer.addEventListener('click', e => {
 });
 
 neighboursContainer.addEventListener('click', e => {
-    const currCCA3 = e.target.closest('.country').dataset.cca3;
+    const currCountry = e.target.closest('.country');
+
+    if (!currCountry) return;
+
     countriesContainer.innerHTML = '';
     neighboursContainer.innerHTML = '';
+    const currCCA3 = currCountry.dataset.cca3;
 
     getCountry(currCCA3, 'neighbour');
     getNeighbours(currCCA3, 'neighbour');
