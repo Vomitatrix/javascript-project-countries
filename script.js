@@ -147,3 +147,12 @@ countriesContainer.addEventListener('click', e => {
 
     getNeighbours(currCCA3, 'neighbour');
 });
+
+neighboursContainer.addEventListener('click', e => {
+    const currCCA3 = e.target.closest('.country').dataset.cca3;
+    countriesContainer.innerHTML = '';
+    neighboursContainer.innerHTML = '';
+
+    getCountry(currCCA3, 'neighbour');
+    getNeighbours(currCCA3, 'neighbour');
+});

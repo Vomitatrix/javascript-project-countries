@@ -4,6 +4,10 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
+main {
+    display: flex;
+}
+
 .countries-container,
 .neighbours-container {
     display: flex;
@@ -11,6 +15,7 @@
     flex-wrap: wrap;
     opacity: 0;
     transition: all 1s;
+    align-items: center;
 }
 
 .country {
@@ -19,6 +24,7 @@
     overflow: hidden;
     box-shadow: 0 0 20px 5px #ccc;
     margin: 10px;
+    height: max-content;
 }
 
 .neighbour {
