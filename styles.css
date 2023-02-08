@@ -4,9 +4,13 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.countries-container {
+.countries-container,
+.neighbours-container {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
+    opacity: 0;
+    transition: all 1s;
 }
 
 .country {
@@ -15,6 +19,11 @@
     overflow: hidden;
     box-shadow: 0 0 20px 5px #ccc;
     margin: 10px;
+}
+
+.neighbour {
+    transform: scale(0.8) translateY(1rem);
+    margin-left: 0;
 }
 
 .country__data {

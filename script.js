@@ -1,6 +1,7 @@
 'use strict';
 
 const countriesContainer = document.querySelector('.countries-container');
+const neighboursContainer = document.querySelector('.neighbours-container');
 const input = document.querySelector('.input');
 const searchBtn = document.querySelector('.search-btn');
 const whereAmIBtn = document.querySelector('.where-am-i-btn');
@@ -14,7 +15,7 @@ function renderCountry(data, className = '') {
             : (+data.population / 1_000).toFixed(1) + ' thousand';
 
     const html = `
-        <article class="country ${className}">
+        <article class="country ${className}" data-cca3="${data.cca3}">
             <img class="country__img" src="${data.flags.svg}" />
             <div class="country__data">
                 <h3 class="country__name">${data.name.official}</h3>
@@ -28,8 +29,15 @@ function renderCountry(data, className = '') {
                 } (${Object.entries(data.currencies)[0][0]})</p>
             </div>
         </article>`;
-    countriesContainer.insertAdjacentHTML('beforeend', html);
-    countriesContainer.style.opacity = '1';
+
+    if (className === '') {
+        countriesContainer.insertAdjacentHTML('beforeend', html);
+        countriesContainer.style.opacity = '1';
+    }
+    if (className === 'neighbour') {
+        neighboursContainer.insertAdjacentHTML('beforeend', html);
+        neighboursContainer.style.opacity = '1';
+    }
 }
 
 function renderError(err) {
@@ -48,6 +56,11 @@ async function getJSON(country, type, lat, lng) {
         if (type === 'reverse') {
             res = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+            );
+        }
+        if (type === 'neighbour') {
+            res = await fetch(
+                `https://restcountries.com/v3.1/alpha/${country}`
             );
         }
 
@@ -73,13 +86,25 @@ function getLocation() {
     }
 }
 
-async function getCountry(country) {
+async function getNeighbours(country, type) {
     try {
-        countriesContainer.innerHTML = '';
-        const res = await getJSON(country, 'search');
+        const [res] = await getJSON(country, type);
+        const borders = res.borders;
+
+        borders.forEach(country => {
+            getCountry(country, type, 'neighbour');
+        });
+    } catch (err) {
+        renderError(err);
+    }
+}
+
+async function getCountry(country, type = 'search', className = '') {
+    try {
+        const res = await getJSON(country, type);
 
         res.forEach(country => {
-            renderCountry(country);
+            renderCountry(country, className);
         });
     } catch (err) {
         renderError(err);
@@ -88,6 +113,8 @@ async function getCountry(country) {
 
 whereAmIBtn.addEventListener('click', e => {
     e.preventDefault();
+    countriesContainer.innerHTML = '';
+    neighboursContainer.innerHTML = '';
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             async position => {
@@ -104,6 +131,19 @@ whereAmIBtn.addEventListener('click', e => {
 
 searchBtn.addEventListener('click', e => {
     e.preventDefault();
-
+    countriesContainer.innerHTML = '';
+    neighboursContainer.innerHTML = '';
     getCountry(input.value);
+    input.value = '';
+});
+
+countriesContainer.addEventListener('click', e => {
+    const countries = document.querySelectorAll('.country');
+    const currCCA3 = e.target.closest('.country').dataset.cca3;
+
+    countries.forEach(curr => {
+        if (curr.dataset.cca3 !== currCCA3) curr.remove();
+    });
+
+    getNeighbours(currCCA3, 'neighbour');
 });
